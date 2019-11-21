@@ -1,3 +1,4 @@
+import hashlib
 import random
 import uuid
 from flask import Flask, render_template, request, redirect, make_response
@@ -41,14 +42,21 @@ def poslji_sporocilo():
 @app.route("/prijava", methods=["POST"])
 def prijava():
     ime = request.form.get("ime")
+    originalno_geslo = request.form.get("geslo")
+    geslo = hashlib.sha256(originalno_geslo.encode()).hexdigest()
 
     sejna_vrednost = str(uuid.uuid4())
 
+    # Geslo je potrebno sifrirati!
+
     uporabnik = db.query(Uporabnik).filter_by(ime=ime).first()
     if not uporabnik:
-        uporabnik = Uporabnik(ime=ime, sejna_vrednost=sejna_vrednost)
+        uporabnik = Uporabnik(ime=ime, geslo=geslo, sejna_vrednost=sejna_vrednost)
     else:
-        uporabnik.sejna_vrednost = sejna_vrednost
+        if geslo == uporabnik.geslo:
+            uporabnik.sejna_vrednost = sejna_vrednost
+        else:
+            return "Napacno geslo"
 
     db.add(uporabnik)
     db.commit()

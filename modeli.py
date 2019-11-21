@@ -12,6 +12,8 @@ class Komentar(db.Model):
 class Uporabnik(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ime = db.Column(db.String)
+    email = db.Column(db.String)
     geslo = db.Column(db.String)
     sejna_vrednost = db.Column(db.String)
+
 

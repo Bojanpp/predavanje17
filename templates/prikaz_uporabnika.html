@@ -7,6 +7,13 @@
 <p><strong>Ime: </strong>  {{ uporabnik.ime }}</p>
 <p><strong>email: </strong>  {{ uporabnik.email }}</p>
 
+<form method="post">
+    <input type="checkbox", name="je_blokiran"
+           {% if uporabnik.je_blokiran %} checked {% endif %}
+    >Uporabnik blokiran
+    <br>
+    <button type="submit">Shrani</button>
+</form>
 
 
 {% endblock %}

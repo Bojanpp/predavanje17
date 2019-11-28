@@ -1,6 +1,8 @@
 import hashlib
+import json
 import random
 import uuid
+import requests
 from flask import Flask, render_template, request, redirect, make_response
 from modeli import Komentar, db, Uporabnik
 
@@ -180,6 +182,26 @@ def prikaz_uporabnika(uporabnik_id):
 
     return render_template("prikaz_uporabnika.html", uporabnik=uporabnik)
 
+
+@app.route("/vreme")
+def vreme():
+    mesto = "Maribor"
+
+    odgovor_geo = json.loads(requests.get("https://geocode.xyz/" + mesto + "?json=1").text)
+    lon = odgovor_geo["longt"]
+    lat = odgovor_geo["latt"]
+
+
+
+    url = "https://opendata.si/vreme/report/?lat=" + lat + "&lon=" + lon
+
+    # drug nacin
+     # url = "https://opendata.si/vreme/report/?lat=" % (lat, lon)  drug nacin
+
+    odgovor = json.loads(requests.get(url).text)
+    dez = odgovor["forecast"]["data"][0]["rain"]
+
+    return render_template("vreme.html", vreme=dez)
 
 
 if __name__ == '__main__':
